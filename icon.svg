@@ -1,0 +1,36 @@
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+
+  <!-- Background -->
+  <rect width="512" height="512" rx="120" fill="#0f172a"/>
+
+  <!-- Fire gradient -->
+  <defs>
+    <linearGradient id="fireGrad" x1="0" y1="1" x2="0" y2="0">
+      <stop offset="0%" stop-color="#ff3c00"/>
+      <stop offset="50%" stop-color="#ff7a00"/>
+      <stop offset="100%" stop-color="#ffd166"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Flame shape -->
+  <path d="
+    M256 420
+    C180 360, 170 300, 210 250
+    C240 210, 240 180, 230 140
+    C290 180, 320 220, 300 260
+    C340 240, 370 200, 350 140
+    C420 220, 420 320, 340 380
+    C310 400, 280 420, 256 420
+    Z
+  " fill="url(#fireGrad)"/>
+
+  <!-- Inner flame -->
+  <path d="
+    M256 360
+    C220 320, 230 280, 260 250
+    C270 280, 300 300, 280 330
+    C270 345, 260 360, 256 360
+    Z
+  " fill="#ffffff" opacity="0.8"/>
+
+</svg>
