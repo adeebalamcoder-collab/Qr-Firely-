@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="description" content="QR Firely - Fast, modern QR code generator with advanced design features." />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="QR Firely" />
+  <title>QR Firely</title>
+
+  <link rel="manifest" href="manifest.json" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="apple-touch-icon" href="icon.svg" />
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://cdn.jsdelivr.net/npm/qr-code-styling@1.6.0-rc.1/lib/qr-code-styling.js"></script>
+</head>
+<body>
+
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand">
+        <img src="icon.svg" alt="QR Firely" class="brand-logo" />
+        <span class="brand-name">QR <span class="brand-fire">Firely</span></span>
+      </div>
+      <button id="installBtn" class="install-btn hidden" title="Install App">
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Install
+      </button>
+    </div>
+  </header>
+
+  <main class="app-main">
+
+    <section class="type-tabs-section">
+      <div class="tabs-scroll">
+        <div class="tabs" id="typeTabs">
+          <button class="tab active" data-type="url">URL</button>
+          <button class="tab" data-type="text">Text</button>
+          <button class="tab" data-type="wifi">WiFi</button>
+          <button class="tab" data-type="phone">Phone</button>
+          <button class="tab" data-type="email">Email</button>
+          <button class="tab" data-type="whatsapp">WhatsApp</button>
+          <button class="tab" data-type="upi">UPI</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="input-section">
+
+      <div class="qr-form active" id="form-url">
+        <label class="field-label">Website URL</label>
+        <input type="url" id="input-url" class="field-input"
+          placeholder="https://example.com" autocomplete="off" />
+      </div>
+
+      <div class="qr-form" id="form-text">
+        <label class="field-label">Text Content</label>
+        <textarea id="input-text" class="field-input field-textarea"
+          placeholder="Enter any text..."></textarea>
+      </div>
+
+      <div class="qr-form" id="form-wifi">
+        <label class="field-label">Network Name (SSID)</label>
+        <input type="text" id="input-wifi-ssid" class="field-input" placeholder="MyWiFiNetwork" />
+        <label class="field-label">Password</label>
+        <input type="text" id="input-wifi-pass" class="field-input" placeholder="password123" />
+        <label class="field-label">Security Type</label>
+        <select id="input-wifi-sec" class="field-input field-select">
+          <option value="WPA">WPA / WPA2</option>
+          <option value="WEP">WEP</option>
+          <option value="">None</option>
+        </select>
+      </div>
+
+      <div class="qr-form" id="form-phone">
+        <label class="field-label">Phone Number</label>
+        <input type="tel" id="input-phone" class="field-input" placeholder="+919876543210" />
+      </div>
+
+      <div class="qr-form" id="form-email">
+        <label class="field-label">Email Address</label>
+        <input type="email" id="input-email-to" class="field-input" placeholder="hello@example.com" />
+        <label class="field-label">Subject</label>
+        <input type="text" id="input-email-sub" class="field-input" placeholder="Subject (optional)" />
+        <label class="field-label">Body</label>
+        <textarea id="input-email-body" class="field-input field-textarea"
+          placeholder="Message (optional)"></textarea>
+      </div>
+
+      <div class="qr-form" id="form-whatsapp">
+        <label class="field-label">WhatsApp Number</label>
+        <input type="tel" id="input-wa-num" class="field-input" placeholder="+919876543210" />
+        <label class="field-label">Message</label>
+        <textarea id="input-wa-msg" class="field-input field-textarea"
+          placeholder="Pre-filled message (optional)"></textarea>
+      </div>
+
+      <div class="qr-form" id="form-upi">
+        <label class="field-label">UPI ID</label>
+        <input type="text" id="input-upi-id" class="field-input" placeholder="name@upi" />
+        <label class="field-label">Payee Name</label>
+        <input type="text" id="input-upi-name" class="field-input" placeholder="John Doe" />
+        <label class="field-label">Amount (optional)</label>
+        <input type="number" id="input-upi-amt" class="field-input" placeholder="0.00" min="0" />
+        <label class="field-label">Note (optional)</label>
+        <input type="text" id="input-upi-note" class="field-input" placeholder="Payment note" />
+      </div>
+
+    </section>
+    <section class="preview-section">
+      <div class="preview-card">
+        <div class="preview-header">
+          <span class="preview-title">QR Preview</span>
+          <span class="preview-badge" id="previewType">URL</span>
+        </div>
+        <div class="qr-canvas-wrap" id="qrCanvas"></div>
+        <p class="preview-hint" id="previewHint">Enter details above to generate QR code</p>
+      </div>
+    </section>
+
+    <section class="customize-section">
+      <div class="section-header" id="toggleCustomize">
+        <span class="section-title">Customize</span>
+        <svg class="chevron" id="customizeChevron" xmlns="http://www.w3.org/2000/svg"
+          width="18" height="18" fill="none" viewBox="0 0 24 24"
+          stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+        </svg>
+      </div>
+
+      <div class="customize-body" id="customizeBody">
+
+        <div class="customize-grid">
+
+          <div class="custom-group">
+            <label class="field-label">Foreground Color</label>
+            <div class="color-row">
+              <input type="color" id="fgColor" class="color-swatch" value="#ff7a00" />
+              <input type="text" id="fgColorHex" class="field-input color-hex" value="#ff7a00" maxlength="7" />
+            </div>
+          </div>
+
+          <div class="custom-group">
+            <label class="field-label">Background Color</label>
+            <div class="color-row">
+              <input type="color" id="bgColor" class="color-swatch" value="#0f172a" />
+              <input type="text" id="bgColorHex" class="field-input color-hex" value="#0f172a" maxlength="7" />
+            </div>
+          </div>
+
+        </div>
+
+        <div class="custom-group">
+          <div class="toggle-row">
+            <label class="field-label">Enable Gradient</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="gradientToggle" />
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <div class="gradient-options hidden" id="gradientOptions">
+            <label class="field-label">Gradient Second Color</label>
+            <div class="color-row">
+              <input type="color" id="gradColor" class="color-swatch" value="#ff3c00" />
+              <input type="text" id="gradColorHex" class="field-input color-hex" value="#ff3c00" maxlength="7" />
+            </div>
+            <label class="field-label">Gradient Type</label>
+            <select id="gradType" class="field-input field-select">
+              <option value="linear">Linear</option>
+              <option value="radial">Radial</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="custom-group">
+          <label class="field-label">Dot Style</label>
+          <div class="style-grid" id="dotStyleGrid">
+            <button class="style-btn active" data-dot="rounded">Rounded</button>
+            <button class="style-btn" data-dot="dots">Dots</button>
+            <button class="style-btn" data-dot="classy">Classy</button>
+            <button class="style-btn" data-dot="classy-rounded">Classy Round</button>
+            <button class="style-btn" data-dot="square">Square</button>
+            <button class="style-btn" data-dot="extra-rounded">Extra Round</button>
+          </div>
+        </div>
+
+        <div class="custom-group">
+          <label class="field-label">Corner Square Style</label>
+          <div class="style-grid" id="cornerSquareGrid">
+            <button class="style-btn active" data-corner-sq="extra-rounded">Rounded</button>
+            <button class="style-btn" data-corner-sq="dot">Dot</button>
+            <button class="style-btn" data-corner-sq="square">Square</button>
+          </div>
+        </div>
+
+        <div class="custom-group">
+          <label class="field-label">Corner Dot Style</label>
+          <div class="style-grid" id="cornerDotGrid">
+            <button class="style-btn active" data-corner-dot="dot">Dot</button>
+            <button class="style-btn" data-corner-dot="square">Square</button>
+          </div>
+        </div>
+
+        <div class="custom-group">
+          <label class="field-label">Logo Inside QR (optional)</label>
+          <div class="logo-upload-wrap">
+            <input type="file" id="logoInput" accept="image/*" class="hidden" />
+            <button class="btn-outline" id="logoBtn">Upload Logo</button>
+            <button class="btn-ghost" id="logoRemoveBtn" style="display:none;">Remove</button>
+            <span class="logo-filename" id="logoFilename"></span>
+          </div>
+        </div>
+
+        <div class="custom-group">
+          <label class="field-label">QR Size</label>
+          <div class="size-row">
+            <input type="range" id="qrSize" min="200" max="600" value="300" class="range-input" />
+            <span class="size-label" id="qrSizeLabel">300px</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="action-section">
+      <button class="btn-primary" id="downloadPng">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Download PNG
+      </button>
+      <button class="btn-secondary" id="downloadSvg">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 10l5 5 5-5M12 15V3"/>
+        </svg>
+        Download SVG
+      </button>
+      <button class="btn-ghost-action" id="shareBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8.684 13.342C8.886 12.938 9 12.482 9 12s-.114-.938-.316-1.342
+            m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316
+            m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0
+            105.368 2.684 3 3 0 00-5.368-2.684z"/>
+        </svg>
+        Share
+      </button>
+      <button class="btn-ghost-action" id="copyLinkBtn">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none"
+          viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round"
+            d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012
+            2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+        </svg>
+        Copy Link
+      </button>
+    </section>
+    <section class="history-section">
+      <div class="section-header" id="toggleHistory">
+        <span class="section-title">My QR Codes</span>
+        <div class="history-header-right">
+          <span class="history-count" id="historyCount">0</span>
+          <svg class="chevron" id="historyChevron" xmlns="http://www.w3.org/2000/svg"
+            width="18" height="18" fill="none" viewBox="0 0 24 24"
+            stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="history-body collapsed" id="historyBody">
+
+        <div class="history-toolbar">
+          <button class="btn-danger-sm" id="clearHistoryBtn">Clear All</button>
+        </div>
+
+        <div class="history-empty hidden" id="historyEmpty">
+          <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5"
+            class="empty-icon">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+          </svg>
+          <p>No QR codes saved yet.</p>
+          <p class="empty-sub">Generate a QR code and it will appear here.</p>
+        </div>
+
+        <div class="history-list" id="historyList"></div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <p>QR Firely &mdash; Fast QR Generator</p>
+  </footer>
+
+  <!-- TOAST NOTIFICATION -->
+  <div class="toast hidden" id="toast">
+    <span id="toastMsg"></span>
+  </div>
+
+  <!-- HISTORY ITEM TEMPLATE -->
+  <template id="historyItemTemplate">
+    <div class="history-item">
+      <div class="history-thumb" data-canvas></div>
+      <div class="history-meta">
+        <span class="history-type" data-type-label></span>
+        <span class="history-value" data-value></span>
+        <span class="history-date" data-date></span>
+      </div>
+      <div class="history-actions">
+        <button class="hist-btn" data-action="load" title="Load">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0
+              0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357
+              2H15"/>
+          </svg>
+        </button>
+        <button class="hist-btn hist-btn-danger" data-action="delete" title="Delete">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" fill="none"
+            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+              d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0
+              01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0
+              00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </template>
+  <script src="app.js"></script>
+
+  <script>
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('service-worker.js')
+          .then(reg => console.log('SW registered:', reg.scope))
+          .catch(err => console.error('SW error:', err));
+      });
+    }
+
+    let deferredPrompt = null;
+    const installBtn = document.getElementById('installBtn');
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      e.preventDefault();
+      deferredPrompt = e;
+      installBtn.classList.remove('hidden');
+    });
+
+    installBtn.addEventListener('click', async () => {
+      if (!deferredPrompt) return;
+      deferredPrompt.prompt();
+      const { outcome } = await deferredPrompt.userChoice;
+      if (outcome === 'accepted') {
+        installBtn.classList.add('hidden');
+      }
+      deferredPrompt = null;
+    });
+
+    window.addEventListener('appinstalled', () => {
+      installBtn.classList.add('hidden');
+      deferredPrompt = null;
+    });
+  </script>
+
+</body>
+</html>
